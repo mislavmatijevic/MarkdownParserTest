@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MarkdownParserTest"
+        xmlns:behvaiors="clr-namespace:MarkdownParserTest.Behaviors"
+        xmlns:vm="clr-namespace:MarkdownParserTest.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:TextsViewModel />
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
@@ -18,9 +23,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="1" Grid.Column="1"></TextBox>
-        <RichTextBox Grid.Row="1" Grid.Column="2"></RichTextBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=MarkdownText}" />
+        <WebBrowser Grid.Row="1" Grid.Column="2" behvaiors:BrowserBehavior.Html="{Binding Path=HTMLText}" />
     </Grid>
 </Window>
-
-    
