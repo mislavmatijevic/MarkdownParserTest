@@ -25,7 +25,9 @@ namespace MarkdownParserTest.Behaviors
         static void OnHtmlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             WebBrowser? wb = d as WebBrowser;
-            wb?.NavigateToString(e.NewValue as string);
+            string? newValue = e.NewValue as string;
+            if (newValue == "") newValue = " ";
+            wb?.NavigateToString(newValue);
         }
     }
 }

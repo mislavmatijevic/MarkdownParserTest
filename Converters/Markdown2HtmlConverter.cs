@@ -1,21 +1,89 @@
-﻿namespace MarkdownParserTest.Converters
+﻿using System.Text;
+
+namespace MarkdownParserTest.Converters
 {
     internal class Markdown2HtmlConverter : IConverter
     {
         public string Convert(string value)
         {
             value = ReplaceHtmlSpecificChars(value);
+            value = CreateHtmlHeaders(value);
             return value;
         }
 
         private string ReplaceHtmlSpecificChars(string value)
         {
             return value
-                .Replace("\"", "&#34;")
-                .Replace("\'", "&#39;")
-                .Replace("&", "&#38;")
-                .Replace("<", "&#60;")
-                .Replace(">", "&#62;");
+                .Replace("\"", "&quot;")
+                .Replace("\'", "&apos;")
+                .Replace("&", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;");
+        }
+
+        private string CreateHtmlHeaders(string value)
+        {
+            value = CreateHtmlHeaderOfLevel(value, 6);
+            value = CreateHtmlHeaderOfLevel(value, 5);
+            value = CreateHtmlHeaderOfLevel(value, 4);
+            value = CreateHtmlHeaderOfLevel(value, 3);
+            value = CreateHtmlHeaderOfLevel(value, 2);
+            value = CreateHtmlHeaderOfLevel(value, 1);
+            return value;
+        }
+
+        private string CreateHtmlHeaderOfLevel(string allText, int headerLevel)
+        {
+            StringBuilder headerLevelTagBuilder = new StringBuilder();
+            for (int i = 0; i < headerLevel; i++)
+            {
+                headerLevelTagBuilder.Append('#');
+            }
+            string headerLevelValue = headerLevelTagBuilder.ToString();
+            string htmlHeaderOpeningTag = $"<h{headerLevel}>";
+            string htmlHeaderClosingTag = $"</h{headerLevel}>";
+
+            int indexOfHeader = 0;
+            bool doesHeaderLevelExist = false;
+            do
+            {
+                indexOfHeader = allText.IndexOf(headerLevelValue, indexOfHeader);
+                doesHeaderLevelExist = indexOfHeader != -1;
+
+                if (doesHeaderLevelExist)
+                {
+                    allText = InsertOpeningTagInPlaceOfMarkdownHeaderValue(allText, htmlHeaderOpeningTag, headerLevel, indexOfHeader);
+                    allText = InsertClosingTagInPlaceOfEndline(allText, htmlHeaderClosingTag, indexOfHeader);
+                }
+
+            } while (doesHeaderLevelExist);
+
+            return allText;
+        }
+
+        private string InsertOpeningTagInPlaceOfMarkdownHeaderValue(string allText, string htmlHeaderOpeningTag, int headerLevel, int indexOfHeaderPlacement)
+        {
+            allText = allText.Remove(indexOfHeaderPlacement, headerLevel);
+            allText = allText.Insert(indexOfHeaderPlacement, htmlHeaderOpeningTag);
+            return allText;
+        }
+
+        private static string InsertClosingTagInPlaceOfEndline(string allText, string htmlHeaderClosingTag, int searchAfter)
+        {
+            char newLineCharacter = '\n';
+            int indexOfEndlineAfterHeader = allText.IndexOf(newLineCharacter, searchAfter);
+
+            if (indexOfEndlineAfterHeader != -1)
+            {
+                allText = allText.Remove(indexOfEndlineAfterHeader, 1);
+            }
+            else
+            {
+                indexOfEndlineAfterHeader = allText.Length;
+            }
+
+            allText = allText.Insert(indexOfEndlineAfterHeader, htmlHeaderClosingTag);
+            return allText;
         }
     }
 }
