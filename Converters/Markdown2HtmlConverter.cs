@@ -7,8 +7,14 @@ namespace MarkdownParserTest.Converters
         public string Convert(string value)
         {
             value = ReplaceHtmlSpecificChars(value);
+            value = ReplaceNewLinesWithBreakLines(value);
             value = CreateHtmlHeaders(value);
             return value;
+        }
+
+        private string ReplaceNewLinesWithBreakLines(string value)
+        {
+            return value.Replace("\n", "<br>");
         }
 
         private string ReplaceHtmlSpecificChars(string value)
@@ -70,12 +76,12 @@ namespace MarkdownParserTest.Converters
 
         private static string InsertClosingTagInPlaceOfEndline(string allText, string htmlHeaderClosingTag, int searchAfter)
         {
-            char newLineCharacter = '\n';
+            string newLineCharacter = "<br>";
             int indexOfEndlineAfterHeader = allText.IndexOf(newLineCharacter, searchAfter);
 
             if (indexOfEndlineAfterHeader != -1)
             {
-                allText = allText.Remove(indexOfEndlineAfterHeader, 1);
+                allText = allText.Remove(indexOfEndlineAfterHeader, newLineCharacter.Length);
             }
             else
             {

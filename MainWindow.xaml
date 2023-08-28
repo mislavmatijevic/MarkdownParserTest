@@ -23,7 +23,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=MarkdownText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=MarkdownText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" />
         <WebBrowser Grid.Row="1" Grid.Column="2" behvaiors:BrowserBehavior.Html="{Binding Path=HTMLText, Mode=OneWay}" />
     </Grid>
 </Window>
